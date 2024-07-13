@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route, useHistory, Redirect } from "react-router-dom"
 import Register from "./components/Register.js";
 import Login from "./components/Login.js";
-
+import './index.css'
 import * as auth from "./utils/auth.js";
 
 const InfoTooltip = React.lazy(() => import("shell/InfoTooltip").catch(() => {
@@ -37,11 +37,10 @@ export default function AuthPage({ onSuccessLogin }) {
       .login(email, password)
       .then((res) => {
         onSuccessLogin({ email })
-        // setIsLoggedIn(true);
-        // setEmail(email);
         history.push("/");
       })
       .catch((err) => {
+        console.error(err)
         setTooltipStatus("fail");
         setIsInfoToolTipOpen(true);
       });

@@ -9,10 +9,6 @@ module.exports = merge(commonConfig, {
     port: 3001,
   },
 
-  output: {
-    publicPath: 'http://localhost:3001/',
-  },
-
   plugins: [
     new ModuleFederationPlugin({
       name: 'auth',
@@ -40,7 +36,6 @@ module.exports = merge(commonConfig, {
             requiredVersion: deps['react-router-dom'],
           },
         },
-        './src/utils/auth.js',
       ],
     }),
     new HtmlWebpackPlugin({

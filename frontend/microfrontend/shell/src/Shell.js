@@ -2,10 +2,13 @@ import React from "react";
 import { Route, useHistory, Switch } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 import api from "./utils/api";
-import { CurrentUserContext } from "./contexts/CurrentUserContext";
+import { CurrentUserContext } from "shell/CurrentUserContext";
+import eventBus from 'shell/eventBus'
 
 import { checkToken } from 'auth/authUtils';
+import MainContent from "./components/MainContent";
 
 
 const AuthPage = React.lazy(() => import('auth/AuthPage').catch(() => {
@@ -13,10 +16,17 @@ const AuthPage = React.lazy(() => import('auth/AuthPage').catch(() => {
 }));
 
 export default function Shell() {
-  // const [cards, setCards] = React.useState([]);
-
-  // В корневом компоненте App создана стейт-переменная currentUser. Она используется в качестве значения для провайдера контекста.
   const [currentUser, setCurrentUser] = React.useState({});
+
+  const updateUser = (userData) => {
+    setCurrentUser(userData)
+  }
+
+  React.useEffect(() => {
+    eventBus.on('changeCurrentUser', updateUser);
+
+    return () => eventBus.removeListener('changeCurrentUser', updateUser)
+  }, [])
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
@@ -24,14 +34,10 @@ export default function Shell() {
   const history = useHistory();
 
 
-
   React.useEffect(() => {
     api
-      .getAppInfo()
-      .then(([cardData, userData]) => {
-        setCurrentUser(userData);
-        // setCards(cardData);
-      })
+      .getUserInfo()
+      .then(setCurrentUser)
       .catch((err) => console.log(err));
   }, []);
 
@@ -42,7 +48,6 @@ export default function Shell() {
     if (token) {
       checkToken(token)
         .then((res) => {
-          console.log("res", res)
           setEmail(res.data.email);
           setIsLoggedIn(true);
           history.push("/");
@@ -56,6 +61,7 @@ export default function Shell() {
 
 
   function onSuccessLogin({ email }) {
+    console.log({ email })
     setIsLoggedIn(true);
     setEmail(email);
   }
@@ -71,28 +77,20 @@ export default function Shell() {
   return (
     // В компонент App внедрён контекст через CurrentUserContext.Provider
     <CurrentUserContext.Provider value={currentUser} >
-
       <div className="page__content">
         <Header email={email} onSignOut={onSignOut} />
         <Switch>
           {/*Роут / защищён HOC-компонентом ProtectedRoute*/}
-          {/* <ProtectedRoute
+          <ProtectedRoute
             exact
             path="/"
-            component={Main}
-            cards={cards}
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onEditAvatar={handleEditAvatarClick}
-            onCardClick={handleCardClick}
-            onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
+            component={MainContent}
             loggedIn={isLoggedIn}
-          /> */}
+          />
 
           <Route path="/auth">
             <React.Suspense fallback={'Loading'}>
-              <AuthPage onSuccess={onSuccessLogin} />
+              <AuthPage onSuccessLogin={onSuccessLogin} />
             </React.Suspense>
           </Route>
 

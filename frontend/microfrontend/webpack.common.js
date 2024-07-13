@@ -1,5 +1,6 @@
 const path = require('path');
 
+
 module.exports = {
   entry: './src/index',
   mode: 'development',
@@ -52,14 +53,19 @@ module.exports = {
         ]
       },
       {
-        test: /\.svg$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 4192,
-          },
-        },
+        test: /\.(png|jpe?g|gif|svg)$/,
+        type: 'asset/resource'
       },
+      // {
+      //   test: /\.(png|jpe?g|gif|svg)$/,
+      //   use: {
+      //     loader: 'file-loader',
+      //     options: {
+      //       name: 'images/[name].[hash].[ext]',
+      //       esModule: true,
+      //     },
+      //   },
+      // },
     ],
-  },
+  }
 };

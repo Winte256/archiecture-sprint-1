@@ -1,7 +1,6 @@
 const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlugin;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { merge } = require('webpack-merge');
-
 const commonConfig = require('../webpack.common.js');
 const deps = require('./package.json').dependencies;
 
@@ -19,13 +18,19 @@ module.exports = merge(commonConfig, {
       name: 'shell',
       filename: 'remoteEntry.js',
       remotes: {
+        places: 'places@http://localhost:3003/remoteEntry.js',
+        profile: 'profile@http://localhost:3002/remoteEntry.js',
         auth: 'auth@http://localhost:3001/remoteEntry.js',
         shell: 'shell@http://localhost:3000/remoteEntry.js',
       },
       exposes: {
         './Shell': './src/Shell.js',
-        './CurrentUserContext': './src/contexts/CurrentUserContext.js',
-        './InfoTooltip': './src/components/InfoTooltip.js',
+        './CurrentUserContext': './src/contexts/CurrentUserContext',
+        './InfoTooltip': './src/components/InfoTooltip',
+        './ImagePopup': './src/components/ImagePopup',
+        './PopupWithForm': './src/components/PopupWithForm',
+        './api': './src/utils/api',
+        './eventBus': './src/utils/eventBus'
       },
       shared: [
         {
@@ -42,11 +47,15 @@ module.exports = merge(commonConfig, {
             requiredVersion: deps['react-router-dom'],
           },
         },
+        './src/utils/eventBus',
         './src/contexts/CurrentUserContext.js',
+        './src/utils/api.js',
       ],
     }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
+      favicon: './public/favicon.ico',
+      filename: './index.html',
     }),
   ],
 });
