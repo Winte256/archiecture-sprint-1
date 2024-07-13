@@ -4,25 +4,27 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import api from "./utils/api";
 import { CurrentUserContext } from "./contexts/CurrentUserContext";
-import * as authUtils from './utils/auth'
+
+import { checkToken } from 'auth/authUtils';
+
 
 const AuthPage = React.lazy(() => import('auth/AuthPage').catch(() => {
   return { default: () => <>Component is not available!</> };
 }));
 
-function App() {
+export default function Shell() {
   // const [cards, setCards] = React.useState([]);
 
   // В корневом компоненте App создана стейт-переменная currentUser. Она используется в качестве значения для провайдера контекста.
   const [currentUser, setCurrentUser] = React.useState({});
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  //В компоненты добавлены новые стейт-переменные: email — в компонент App
+
   const [email, setEmail] = React.useState("");
   const history = useHistory();
 
 
-  // Запрос к API за информацией о пользователе и массиве карточек выполняется единожды, при монтировании.
+
   React.useEffect(() => {
     api
       .getAppInfo()
@@ -33,12 +35,12 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
-  // при монтировании App описан эффект, проверяющий наличие токена и его валидности
+
   React.useEffect(() => {
     const token = localStorage.getItem("jwt");
+
     if (token) {
-      authUtils
-        .checkToken(token)
+      checkToken(token)
         .then((res) => {
           console.log("res", res)
           setEmail(res.data.email);
@@ -68,8 +70,8 @@ function App() {
 
   return (
     // В компонент App внедрён контекст через CurrentUserContext.Provider
+    <CurrentUserContext.Provider value={currentUser} >
 
-    <CurrentUserContext.Provider value={currentUser}>
       <div className="page__content">
         <Header email={email} onSignOut={onSignOut} />
         <Switch>
@@ -89,7 +91,6 @@ function App() {
           /> */}
 
           <Route path="/auth">
-            123
             <React.Suspense fallback={'Loading'}>
               <AuthPage onSuccess={onSuccessLogin} />
             </React.Suspense>
@@ -99,8 +100,5 @@ function App() {
         <Footer />
       </div>
     </CurrentUserContext.Provider>
-
   );
 }
-
-export default App;

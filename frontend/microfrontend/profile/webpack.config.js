@@ -6,11 +6,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = merge(commonConfig, {
   devServer: {
-    port: 3001,
+    port: 3002,
   },
 
   output: {
-    publicPath: 'http://localhost:3001/',
+    publicPath: 'http://localhost:3002/',
   },
 
   plugins: [
@@ -23,7 +23,6 @@ module.exports = merge(commonConfig, {
       },
       exposes: {
         './AuthPage': './src/AuthPage.js',
-        './authUtils': './src/utils/auth.js',
       },
       shared: [
         {
@@ -39,8 +38,7 @@ module.exports = merge(commonConfig, {
             singleton: true,
             requiredVersion: deps['react-router-dom'],
           },
-        },
-        './src/utils/auth.js',
+        }
       ],
     }),
     new HtmlWebpackPlugin({
