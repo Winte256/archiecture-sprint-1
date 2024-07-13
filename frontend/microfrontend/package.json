@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "postinstall": "pnpm --filter \"microfrontend_*\" exec -- npm install",
     "start": "pnpm --filter microfrontend_* --parallel start",
     "build": "pnpm --filter microfrontend_* build",
     "serve": "pnpm --filter microfrontend_* --parallel serve",
