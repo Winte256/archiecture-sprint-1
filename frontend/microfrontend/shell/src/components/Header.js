@@ -3,8 +3,8 @@ import { Route, Link } from 'react-router-dom';
 import logoPath from '../images/logo.svg';
 
 // В корневом компоненте App описаны обработчики: onRegister, onLogin и onSignOut. Эти обработчики переданы в соответствующие компоненты: Register.js, Login.js, Header.js
-function Header ({onSignOut, email }) {
-  function handleSignOut(){
+function Header({ onSignOut, email }) {
+  function handleSignOut() {
     onSignOut();
   }
   return (
@@ -12,15 +12,15 @@ function Header ({onSignOut, email }) {
       <img src={logoPath} alt="Логотип проекта Mesto" className="logo header__logo" />
       <Route exact path="/">
         <div className="header__wrapper">
-          <p className="header__user">{ email }</p>
+          <p className="header__user">{email}</p>
           <button className="header__logout" onClick={handleSignOut}>Выйти</button>
         </div>
       </Route>
-      <Route path="/signup">
-        <Link className="header__auth-link" to="signin">Войти</Link>
+      <Route path="/auth/register">
+        <Link className="header__auth-link" to="/auth/login">Войти</Link>
       </Route>
-      <Route path="/signin">
-        <Link className="header__auth-link" to="signup">Регистрация</Link>
+      <Route path="/auth/login">
+        <Link className="header__auth-link" to="/auth/register">Регистрация</Link>
       </Route>
     </header>
   )

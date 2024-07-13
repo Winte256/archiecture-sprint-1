@@ -1,7 +1,4 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlugin;
 const path = require('path');
-const { dependencies } = require('./package.json');
 
 module.exports = {
   entry: './src/index',
@@ -16,9 +13,15 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'dist'),
     },
-    port: 3001,
+    port: 3000,
     historyApiFallback: true,
     hot: 'only',
+  },
+  resolve: {
+    extensions: ['.js', '.mjs', '.jsx', '.css'],
+    alias: {
+      events: 'events',
+    },
   },
   output: {
     publicPath: 'auto',
@@ -41,32 +44,22 @@ module.exports = {
           presets: ['@babel/preset-react'],
         },
       },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      },
+      {
+        test: /\.svg$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 4192,
+          },
+        },
+      },
     ],
   },
-  resolve: {
-    extensions: ['.js', '.mjs', '.jsx', '.css'],
-    alias: { events: 'events' },
-  },
-
-  plugins: [
-    new ModuleFederationPlugin({
-      name: 'auth',
-      filename: 'remoteEntry.js',
-      remotes: {
-        host: 'host@http://localhost:3000/remoteEntry.js',
-        auth: 'auth@http://localhost:3001/remoteEntry.js',
-      },
-      exposes: {
-        './Auth': './src/Auth',
-        './AuthUtils': './src/utils/auth'
-      },
-      shared: [
-        dependencies.react,
-        dependencies["react-dom"]
-      ],
-    }),
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
-    }),
-  ],
 };

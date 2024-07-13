@@ -1,13 +1,15 @@
 import React from "react";
-import { Route, useHistory, Switch } from "react-router-dom";
+import { Switch, Route, useHistory, Redirect } from "react-router-dom"
 import Register from "./components/Register.js";
 import Login from "./components/Login.js";
 
 import * as auth from "./utils/auth.js";
 
-import InfoTooltip from "host/InfoTooltip";
+// const InfoTooltip = React.lazy(() => import("shell/InfoTooltip").catch(() => {
+//   return { default: () => <>Component is not available!</> };
+// }));
 
-function App({ onSuccess }) {
+export default function AuthPage({ onSuccessLogin }) {
   const [isInfoToolTipOpen, setIsInfoToolTipOpen] = React.useState(false);
   const [tooltipStatus, setTooltipStatus] = React.useState("");
 
@@ -34,7 +36,7 @@ function App({ onSuccess }) {
     auth
       .login(email, password)
       .then((res) => {
-        onSuccess({ email })
+        onSuccessLogin({ email })
         // setIsLoggedIn(true);
         // setEmail(email);
         history.push("/");
@@ -44,24 +46,26 @@ function App({ onSuccess }) {
         setIsInfoToolTipOpen(true);
       });
   }
+  // <React.Suspense fallback={'Loading'}>
+  //   <InfoTooltip
+  //     isOpen={isInfoToolTipOpen}
+  //     onClose={closeAllPopups}
+  //     status={tooltipStatus}
+  //   />
+  // </React.Suspense>
 
   return (
-    <>
-      <Switch>
-        <Route path="/signup">
-          <Register onRegister={onRegister} />
-        </Route>
-        <Route path="/">
-          <Login onLogin={onLogin} />
-        </Route>
-      </Switch>
-      <InfoTooltip
-        isOpen={isInfoToolTipOpen}
-        onClose={closeAllPopups}
-        status={tooltipStatus}
-      />
-    </>
+
+
+    <Switch>
+      <Route path="/auth/register">
+        <Register onRegister={onRegister} />
+      </Route>
+      <Route path="/auth/login">
+        <Login onLogin={onLogin} />
+      </Route>
+      <Redirect from="/auth" to="/auth/login" />
+    </Switch>
+
   );
 }
-
-export default App;

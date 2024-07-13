@@ -2,12 +2,11 @@ import React from "react";
 import { Route, useHistory, Switch } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-// import api from "../utils/api";
+import api from "./utils/api";
 import { CurrentUserContext } from "./contexts/CurrentUserContext";
+import * as authUtils from './utils/auth'
 
-import authUtils from 'auth/AuthUtils'
-
-const Auth = React.lazy(() => import('auth/Auth').catch(() => {
+const AuthPage = React.lazy(() => import('auth/AuthPage').catch(() => {
   return { default: () => <>Component is not available!</> };
 }));
 
@@ -20,19 +19,19 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   //В компоненты добавлены новые стейт-переменные: email — в компонент App
   const [email, setEmail] = React.useState("");
-
   const history = useHistory();
 
+
   // Запрос к API за информацией о пользователе и массиве карточек выполняется единожды, при монтировании.
-  // React.useEffect(() => {
-  //   api
-  //     .getAppInfo()
-  //     .then(([cardData, userData]) => {
-  //       setCurrentUser(userData);
-  //       setCards(cardData);
-  //     })
-  //     .catch((err) => console.log(err));
-  // }, []);
+  React.useEffect(() => {
+    api
+      .getAppInfo()
+      .then(([cardData, userData]) => {
+        setCurrentUser(userData);
+        // setCards(cardData);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   // при монтировании App описан эффект, проверяющий наличие токена и его валидности
   React.useEffect(() => {
@@ -41,6 +40,7 @@ function App() {
       authUtils
         .checkToken(token)
         .then((res) => {
+          console.log("res", res)
           setEmail(res.data.email);
           setIsLoggedIn(true);
           history.push("/");
@@ -68,6 +68,7 @@ function App() {
 
   return (
     // В компонент App внедрён контекст через CurrentUserContext.Provider
+
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page__content">
         <Header email={email} onSignOut={onSignOut} />
@@ -86,14 +87,19 @@ function App() {
             onCardDelete={handleCardDelete}
             loggedIn={isLoggedIn}
           /> */}
-          {/*Роут /signup и /signin не является защищёнными, т.е оборачивать их в HOC ProtectedRoute не нужно.*/}
-          <Route path="/auth/*">
-            <Auth onSuccess={onSuccessLogin} />
+
+          <Route path="/auth">
+            123
+            <React.Suspense fallback={'Loading'}>
+              <AuthPage onSuccess={onSuccessLogin} />
+            </React.Suspense>
           </Route>
+
         </Switch>
         <Footer />
       </div>
     </CurrentUserContext.Provider>
+
   );
 }
 
