@@ -1,3 +1,6 @@
+# Ссылка на второе задание
+[draw.io](https://drive.google.com/file/d/1QB0L5YqRUndmU0FTH70sbV1X8_wzqbjs/view?usp=sharing)
+
 # Запуск
   - Переходим в папку микрофронтов
     > cd microfrontend
