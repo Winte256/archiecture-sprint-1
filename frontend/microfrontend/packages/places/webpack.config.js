@@ -1,18 +1,19 @@
 const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlugin;
 const { merge } = require('webpack-merge');
-const deps = require('./package.json').dependencies;
+const commonDeps = require('../../package.json').dependencies;
+const deps = require('./package.json').dependencies || {};
 const commonConfig = require('../webpack.common.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 module.exports = merge(commonConfig, {
   devServer: {
-    port: 3002,
+    port: 3003,
   },
 
   plugins: [
     new ModuleFederationPlugin({
-      name: 'profile',
+      name: 'places',
       filename: 'remoteEntry.js',
       remotes: {
         shell: 'shell@http://localhost:3000/remoteEntry.js',
@@ -20,21 +21,23 @@ module.exports = merge(commonConfig, {
         profile: 'profile@http://localhost:3002/remoteEntry.js',
       },
       exposes: {
-        './Profile': './src/Profile',
+        './Places': './src/Places',
       },
       shared: [
         {
+          ...deps,
+          ...commonDeps,
           react: {
             singleton: true,
-            requiredVersion: deps.react,
+            requiredVersion: commonDeps.react,
           },
           'react-dom': {
             singleton: true,
-            requiredVersion: deps['react-dom'],
+            requiredVersion: commonDeps['react-dom'],
           },
           'react-router-dom': {
             singleton: true,
-            requiredVersion: deps['react-router-dom'],
+            requiredVersion: commonDeps['react-router-dom'],
           },
         }
       ],

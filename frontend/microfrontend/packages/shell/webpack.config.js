@@ -2,7 +2,8 @@ const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlug
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { merge } = require('webpack-merge');
 const commonConfig = require('../webpack.common.js');
-const deps = require('./package.json').dependencies;
+const commonDeps = require('../../package.json').dependencies;
+const deps = require('./package.json').dependencies || {};
 
 module.exports = merge(commonConfig, {
   devServer: {
@@ -34,17 +35,19 @@ module.exports = merge(commonConfig, {
       },
       shared: [
         {
+          ...deps,
+          ...commonDeps,
           react: {
             singleton: true,
-            requiredVersion: deps.react,
+            requiredVersion: commonDeps.react,
           },
           'react-dom': {
             singleton: true,
-            requiredVersion: deps['react-dom'],
+            requiredVersion: commonDeps['react-dom'],
           },
           'react-router-dom': {
             singleton: true,
-            requiredVersion: deps['react-router-dom'],
+            requiredVersion: commonDeps['react-router-dom'],
           },
         },
         './src/utils/eventBus',

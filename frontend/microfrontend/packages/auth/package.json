@@ -1,0 +1,14 @@
+{
+  "name": "microfrontend_auth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve" ,
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production",
+    "serve": "serve dist -p 3001",
+    "clean": "rm -rf dist"
+  },
+  "author": "",
+  "license": "ISC"
+}
