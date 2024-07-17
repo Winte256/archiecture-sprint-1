@@ -6,7 +6,7 @@
     > npm i -g pnpm
 
   - Переходим в папку микрофронтов
-    > cd microfrontend
+    > cd frontend/microfrontend
   
   - Устанавливаем пакеты
     > pnpm install
