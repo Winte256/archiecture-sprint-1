@@ -23,20 +23,20 @@ describe('Сборка проекта', () => {
 });
 
 describe('Запуск проекта', () => {
-  jest.setTimeout(60000);
+  jest.setTimeout(30000);
   let page;
   let browser;
   let yarnProcess;
 
   beforeAll(async () => {
-    yarnProcess = spawn('npm', ['start'], { detached: true });
+    yarnProcess = spawn('yarn', ['start'], { detached: true });
     await waitPort({ host: 'localhost', port: 3000 });
     browser = await chromium.launch({ headless: true });
     page = await browser.newPage();
   });
 
   afterAll(async () => {
-    await browser?.close?.();
+    await browser.close();
     process.kill(-yarnProcess.pid);
   })
 
