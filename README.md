@@ -2,17 +2,20 @@
 [draw.io](https://drive.google.com/file/d/1QB0L5YqRUndmU0FTH70sbV1X8_wzqbjs/view?usp=sharing)
 
 # Запуск
+  - Проект требует глобальной установки pnpm
+    > npm i -g pnpm
+
   - Переходим в папку микрофронтов
     > cd microfrontend
   
   - Устанавливаем пакеты
-    > npm i
+    > pnpm install
 
   - Локальный запуск
-    > npm start
+    > pnpm start
   
   - Сборка
-    > npm run build
+    > pnpm build
 
 ## Подход
   - Выбрал webpack module federation потому что все наши микрофронты написаны на одном фреймворке и делят одни версии библиотек
