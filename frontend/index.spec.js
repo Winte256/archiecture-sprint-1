@@ -36,7 +36,7 @@ describe('Запуск проекта', () => {
   });
 
   afterAll(async () => {
-    await browser.close();
+    await browser?.close?.();
     process.kill(-yarnProcess.pid);
   })
 
