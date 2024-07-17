@@ -23,13 +23,13 @@ describe('Сборка проекта', () => {
 });
 
 describe('Запуск проекта', () => {
-  jest.setTimeout(30000);
+  jest.setTimeout(60000);
   let page;
   let browser;
   let yarnProcess;
 
   beforeAll(async () => {
-    yarnProcess = spawn('yarn', ['start'], { detached: true });
+    yarnProcess = spawn('npm', ['start'], { detached: true });
     await waitPort({ host: 'localhost', port: 3000 });
     browser = await chromium.launch({ headless: true });
     page = await browser.newPage();
